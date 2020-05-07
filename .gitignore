@@ -409,3 +409,8 @@ healthchecksdb
 MigrationBackup/
 
 # End of https://www.gitignore.io/api/csharp
+
+IoTServer/Properties/AssemblyInfo.cs
+IoTServer/App.config
+*.csproj
+*.sln
