@@ -16,9 +16,9 @@
 * База данных системы умных ценников с интегрированной в нее минимальной базой о товарах магазина
 * Прототип станции с подключенным к ней одним умным ценником. Включает в себя следующие аппаратные элементы:
     * (stm32l152RCT6-Discovery)[https://www.st.com/en/evaluation-tools/32l152cdiscovery.html] в качестве контроллера и основной платы станции
-    * e-inc дисплей [DEW0213T5](http://www.e-paper-display.com/products_detail/productId=309.html) от компании GoodDisplay
+    * e-inc дисплей [DEW0213T5](http://www.e-paper-display.com/products_detail/productId=309.html) от компании GoodDisplay в качестве умного ценника
     * адаптер дисплея (DESPI-CO2)[http://www.e-paper-display.com/products_detail/productId=403.html]
-    * Li-ion аккумулятор
+    * Li-ion аккумулятор в качестве автономного источника питания
     * (ESP01)[https://www.chipdip.ru/product/esp-01] в качестве интерфейса беспроводной связи (wifi)
 
     
