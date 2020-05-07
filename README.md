@@ -1,0 +1,2 @@
+# SmartPriceProject
+Проект для экзамена 
