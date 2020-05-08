@@ -54,7 +54,7 @@ namespace IoTServer
                     }
                 }
 
-                do
+                while(odbcDataReader.Read())
                 {
                     if (!odbcDataReader.IsDBNull(deviceIDColumn))
                     {
@@ -71,17 +71,16 @@ namespace IoTServer
                             }
                         }
                     }
-                } while (odbcDataReader.Read());
+                }
 
                 odbcDataReader.Close();
                 odbcConnection.Close();
 
                 return foundPrice;
             }
-            catch (Exception ex)
+            catch (Exception exc)
             {
-                Console.WriteLine("GetPrice (DBReader) exception:");
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("GetPrice (DBReader) exception:\r\n" +  exc.Message);
                 return -1;
             }
         }

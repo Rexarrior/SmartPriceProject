@@ -31,7 +31,7 @@ namespace IoTServer
 
             server.Start(3033);
 
-            /*
+            
             Thread.Sleep(100);
 
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -46,7 +46,7 @@ namespace IoTServer
                 byte[] buffer = new byte[13];
                 Receive(socket, buffer);
             }
-            */
+            
 
             Console.ReadLine();
 

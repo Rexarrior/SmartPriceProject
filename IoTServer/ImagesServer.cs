@@ -86,8 +86,7 @@ namespace IoTServer
             }
             catch (Exception exc)
             {
-                Console.WriteLine("Request Handler exception:");
-                Console.WriteLine(exc.Message);
+                Console.WriteLine("Request Handler exception:\r\n" + exc.Message);
             }
         }
 
@@ -129,8 +128,7 @@ namespace IoTServer
                     }
                     catch(Exception exc)
                     {
-                        Console.WriteLine("Accepter Thread exception:");
-                        Console.WriteLine(exc.Message);
+                        Console.WriteLine("Accepter Thread exception:\r\n" + exc.Message);
                     }
                 }
             );
