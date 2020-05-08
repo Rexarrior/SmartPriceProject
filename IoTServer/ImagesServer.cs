@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.IO;
 
 namespace IoTServer
 {
@@ -36,9 +37,23 @@ namespace IoTServer
             socket.Send(signal);
         }
 
-        private void SendImage(string filename)
+        private void SendImage(Socket socket, string filename)
         {
+            const int pixelsOffset = 62;
+            const int columnsCount = 104;
+            const int rowsCount = 212;
+            const int bmpRowLength = 128;
 
+            byte[] fileBytes = File.ReadAllBytes(filename);
+
+            for (int i = 0; i < rowsCount; i++)
+            {
+                byte[] column = new byte[13];
+
+                column = fileBytes.Skip(pixelsOffset + i * bmpRowLength).Take(columnsCount).ToArray();
+
+                Send(socket, column);
+            }
         }
 
         /*
@@ -48,7 +63,7 @@ namespace IoTServer
         {
             try
             {
-                string[] filePaths = System.IO.File.ReadAllLines("config.txt");
+                string[] filePaths = File.ReadAllLines("config.txt");
 
                 MSAccessDBReader iotDBReader = new MSAccessDBReader();
 
@@ -66,11 +81,12 @@ namespace IoTServer
                         price = filePaths.Length - 2;
                     }
                     // +1 'cause at position 0 we've got path to DB
-                    SendImage(filePaths[price + 1]);
+                    SendImage(socket as Socket, filePaths[price + 1]);
                 }
             }
             catch (Exception exc)
             {
+                Console.WriteLine("Request Handler exception:");
                 Console.WriteLine(exc.Message);
             }
         }
@@ -113,6 +129,7 @@ namespace IoTServer
                     }
                     catch(Exception exc)
                     {
+                        Console.WriteLine("Accepter Thread exception:");
                         Console.WriteLine(exc.Message);
                     }
                 }
@@ -149,6 +166,8 @@ namespace IoTServer
         public ImagesServer()
         {
             _IsServerRunning = _ServerNotRunning;
+            _RequestHandlerThreads = new List<Thread>();
+            _RequestHandlerSockets = new List<Socket>();
         }
     }
 }

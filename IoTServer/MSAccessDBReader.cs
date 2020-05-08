@@ -20,43 +20,67 @@ namespace IoTServer
             }
 
             string connetionString = null;
-            connetionString = @"Driver={Microsoft Access Driver 
-                                (*.mdb, *.accdb)};DBQ=" + dbFilepath;
+            connetionString = @"Driver={Microsoft Access Driver (*.mdb, *.accdb)};Dbq=" + dbFilepath;
             OdbcConnection odbcConnection = new OdbcConnection(connetionString);
+
+            OdbcCommand odbcCommand = new OdbcCommand("select * from Products", odbcConnection);
 
             try
             {
                 odbcConnection.Open();
 
-                string[] restrictions = new string[4];
-                restrictions[2] = "Products";
-
-                DataTable schema = odbcConnection.GetSchema("Tables");
+                OdbcDataReader odbcDataReader = odbcCommand.ExecuteReader();
 
                 int foundPrice = -1;
 
-                foreach (DataRow row in schema.Rows)
+                if (!odbcDataReader.HasRows)
                 {
-                    if (Convert.ToInt32(row["device_id"].ToString(), 10) == deviceID)
+                    return -1;
+                }
+
+                int deviceIDColumn = 0;
+                int priceColumn = 0;
+
+                for (int i = 0; i < odbcDataReader.FieldCount; i++)
+                {
+                    if (odbcDataReader.GetName(i) == "device_id")
                     {
-                        if (foundPrice == -1)
-                        {
-                            foundPrice = Convert.ToInt32(row["device_id"].ToString(), 10);
-                        }
-                        else
-                        {
-                            foundPrice = -1;
-                            break;
-                        }
+                        deviceIDColumn = i;
+                    }
+
+                    if (odbcDataReader.GetName(i) == "price")
+                    {
+                        priceColumn = i;
                     }
                 }
-                    
+
+                do
+                {
+                    if (!odbcDataReader.IsDBNull(deviceIDColumn))
+                    {
+                        if (odbcDataReader.GetInt32(deviceIDColumn) == deviceID)
+                        {
+                            if (foundPrice == -1)
+                            {
+                                foundPrice = odbcDataReader.GetInt32(priceColumn);
+                            }
+                            else
+                            {
+                                foundPrice = -1;
+                                break;
+                            }
+                        }
+                    }
+                } while (odbcDataReader.Read());
+
+                odbcDataReader.Close();
                 odbcConnection.Close();
 
                 return foundPrice;
             }
             catch (Exception ex)
             {
+                Console.WriteLine("GetPrice (DBReader) exception:");
                 Console.WriteLine(ex.Message);
                 return -1;
             }
