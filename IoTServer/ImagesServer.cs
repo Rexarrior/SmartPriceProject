@@ -40,8 +40,10 @@ namespace IoTServer
         private void SendImage(Socket socket, string filename)
         {
             const int pixelsOffset = 62;
+            // must be dividable by 8
             const int columnsCount = 104;
             const int rowsCount = 212;
+            // must be dividable by 8
             const int bmpRowLength = 128;
 
             byte[] fileBytes = File.ReadAllBytes(filename);
@@ -50,7 +52,7 @@ namespace IoTServer
             {
                 byte[] column = new byte[13];
 
-                column = fileBytes.Skip(pixelsOffset + i * bmpRowLength).Take(columnsCount).ToArray();
+                column = fileBytes.Skip(pixelsOffset + i * (bmpRowLength / 8)).Take((columnsCount/ 8)).ToArray();
 
                 Send(socket, column);
             }
@@ -136,6 +138,8 @@ namespace IoTServer
             _IsServerRunning = _ServerRunning;
 
             _ConnectionsAccepterThread.Start();
+
+            Console.WriteLine("Server started");
 
             return true;
         }
